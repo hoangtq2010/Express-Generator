@@ -12,7 +12,7 @@ promotionRouter.route('/')
 
 .get( (req, res, next) =>{
     Promotions.find({})
-    .then((promotions) => {
+    .then((promotions) => {         //promotions : tra ve tham so Promotions: mongoose.Document[]
         res.statusCode = 200;
         res.setHeader('Content-Type','application/json');
         res.json(promotions);    
