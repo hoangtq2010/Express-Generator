@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');  //phân tích cú pháp vật thể
 const mongoose = require('mongoose');
 
 const Dishes = require('../models/dishes');
-const e = require('express');
 
 const dishRouter = express.Router();  //tuyen bo dishRouter la 1 bo dinh tuyen Express
 
