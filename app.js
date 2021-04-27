@@ -4,6 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var session = require('express-session');
+var FileStore = require('session-file-store')(session);
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -31,13 +34,22 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser('20-10-1997'));
+//app.use(cookieParser('12345-67890-09876-54321'));
+app.use(session({
+  name: 'session-id',
+  secret: '12345-67890-09876-54321',
+  saveUninitialized:false,
+  resave: false,
+  store: new FileStore()
+}))
 
 function auth(req, res, next){
   //console.log(req.headers); //req.headers: nếu thêm tiêu đề ủy quyền ta có thể nhìn thấy nó ngay tại đó
   //chỉ là xem những gì đang đến từ phía khác hàng
-  console.log(req.signedCookies)
-  if(!req.signedCookies){
+  //console.log(req.signedCookies)
+  console.log(req.session)
+  //if(!req.signedCookies){
+  if(!req.session.user){
     var authHeader = req.headers.authorization;
     if(!authHeader){
       var err = new Error('You are not authenticated!');
@@ -53,7 +65,8 @@ function auth(req, res, next){
     var password = auth[1];
 
     if(username === 'admin' && password === 'password') {
-      res.cookie('user','admin',{signed: true});
+      //res.cookie('user','admin',{signed: true});
+      req.session.user = 'admin';
       next(); //authorized
     }
     else{
@@ -65,7 +78,8 @@ function auth(req, res, next){
     }
   }
   else{
-    if(req.signedCookies.user === 'admin'){
+    //if(req.signedCookies.user === 'admin'){
+      if(req.session.user === 'admin'){
       next()
     }
     else{
