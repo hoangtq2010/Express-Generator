@@ -7,6 +7,9 @@ var logger = require('morgan');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 
+var passport = require('passport');
+var authenticate = require('./authenticate');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -43,9 +46,13 @@ app.use(session({
   store: new FileStore()
 }))
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+/* Cookie
 function auth(req, res, next){
   //console.log(req.headers); //req.headers: nếu thêm tiêu đề ủy quyền ta có thể nhìn thấy nó ngay tại đó
   //chỉ là xem những gì đang đến từ phía khác hàng
@@ -73,6 +80,21 @@ function auth(req, res, next){
       return next(err);
     }
   } 
+}
+*/
+
+//passport
+function auth (req, res, next) {
+  console.log(req.user);
+
+  if (!req.user) {
+    var err = new Error('You are not authenticated!');
+    err.status = 403;
+    next(err);
+  }
+  else {
+    next();
+  }
 }
 
 app.use(auth);  //mac dinh client co the truy cap

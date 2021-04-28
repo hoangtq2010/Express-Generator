@@ -2,8 +2,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var passportLocalMongoose = require('passport-local-mongoose');
+
 var User = new Schema({
-    username: {
+    /*username: {
         type: String,
         required: true,
         unique: true
@@ -11,11 +13,13 @@ var User = new Schema({
     password: {
         type: String,
         required: true
-    },
+    },*/
     admin: {
         type: Boolean,
         default: false
     }
 });
+
+User.plugin(passportLocalMongoose); //su dung passport-local-mongoose tu dong update schema username,password
 
 module.exports = mongoose.model('User', User);
