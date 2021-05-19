@@ -33,6 +33,18 @@ connect.then((db) => {
 
 var app = express();
 
+//Middleware chuyen huong tat ca truy cập đến tới cổng an toàn 
+app.all('*', (req, res, next) => {
+  if (req.secure){
+    return next();
+  }
+  else {
+    res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+    //vi du https://localhost:3443
+    //307: tai nguyen nằm tạm thời dưới url khác 
+  }
+})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
